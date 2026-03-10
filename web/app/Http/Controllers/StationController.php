@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Station;
 
 class StationController extends Controller
 {
@@ -19,7 +20,20 @@ class StationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'connector_type' => 'required|string',
+            'power_kw' => 'required|numeric',
+            'status' => 'sometimes|in:available,occupied,maintenance'
+        ]);
+
+        $station = Station::create($validatedData);
+        return response()->json([
+            'message' => 'Borne de recharge ajoutée avec succès !',
+            'station' => $station
+        ],201);
     }
 
     /**
