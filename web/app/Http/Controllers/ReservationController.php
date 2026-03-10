@@ -69,14 +69,48 @@ class ReservationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $reservation = Reservation::findOrFail($id);
+
+        if ($reservation->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'no permission'], 403);
+        }
+
+        $validatedData = $request->validate([
+            'start_time' => 'sometimes|required|date|after_or_equal:now',
+            'duration_minutes' => 'sometimes|required|integer|min:15',
+        ]);
+
+        $startTime = isset($validatedData['start_time']) ? Carbon::parse($validatedData['start_time']) : Carbon::parse($reservation->start_time);
+        $duration = $validatedData['duration_minutes'] ?? $reservation->duration_minutes;
+        
+        $endTime = $startTime->copy()->addMinutes($duration);
+
+        $reservation->update([
+            'start_time' => $startTime,
+            'duration_minutes' => $duration,
+            'end_time' => $endTime,
+        ]);
+
+        return response()->json([
+            'message' => 'résérvation updated',
+            'reservation' => $reservation
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request,string $id)
     {
-        //
+        $reservation = Reservation::findOrFail($id);
+
+        if($reservation->user_id !== $request->user()->id)
+        {
+            return response()->json(['message' => 'you don\'t have access'],403);
+        }
+
+        $reservation->delete();
+
+        return response()->json(['message' => 'reservation cancelled'],200);
     }
 }
