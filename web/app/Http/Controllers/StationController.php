@@ -49,7 +49,23 @@ class StationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $station = Station::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'latitude' => 'sometimes|required|numeric',
+            'longitude' => 'sometimes|required|numeric',
+            'connector_type' => 'sometimes|required|string',
+            'power_kw' => 'sometimes|required|numeric',
+            'status' => 'sometimes|required|in:available,occupied,maintenance'
+        ]);      
+
+        $station->update($validatedData);
+        
+        return response()->json([
+            'message' => 'Borne updated',
+            'station' => $station
+        ],200);
     }
 
     /**
