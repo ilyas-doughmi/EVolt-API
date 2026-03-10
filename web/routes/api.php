@@ -12,9 +12,12 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-Route::get('/stations',[StationController::class,'index']);
-Route::post('/stations',[StationController::class,'store']);
-Route::put('/stations/{id}',[StationController::class,'update']);
-Route::delete('/stations/{id}',[StationController::class,'destroy']);
 Route::post('/auth/logout', [AuthController::class, 'logout']);
+Route::get('/stations',[StationController::class,'index']);
+
+    Route::middleware('admin')->group(function(){
+        Route::post('/stations',[StationController::class,'store']);
+        Route::put('/stations/{id}',[StationController::class,'update']);
+        Route::delete('/stations/{id}',[StationController::class,'destroy']);
+    });
 });
