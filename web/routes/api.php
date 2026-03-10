@@ -7,8 +7,12 @@ use App\Http\Controllers\StationController;
 use App\Models\Station;
 use GuzzleHttp\Middleware;
 
+
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
-Route::post('/auth/logout', [AuthController::class, 'logout']);
+
+Route::middleware('auth:sanctum')->group(function () {
 Route::get('/stations',[StationController::class,'index']);
 Route::post('/stations',[StationController::class,'store']);
+Route::post('/auth/logout', [AuthController::class, 'logout']);
+});
