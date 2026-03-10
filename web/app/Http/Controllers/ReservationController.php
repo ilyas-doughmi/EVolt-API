@@ -12,9 +12,18 @@ class ReservationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Reservation::all(),200);
+        $user = $request->user();
+
+        $reservations = Reservation::with('station')
+                                    ->where('user_id',$user->id)
+                                    ->get();
+
+        return response()->json([
+            'message' =>  'Historique récupéré',
+            'résérvation' => $reservations
+        ], 200);
     }
 
     /**
