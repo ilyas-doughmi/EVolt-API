@@ -465,10 +465,4 @@ Ou avec PHPUnit directement :
 
 Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
----
 
-## Liens Utiles
-
-- [Documentation Laravel](https://laravel.com/docs)
-- [Laravel Sanctum](https://laravel.com/docs/sanctum)
-- [Collection Postman](#) *(à ajouter)*
