@@ -80,4 +80,35 @@ class StationController extends Controller
             'message' => 'Borne deleted'
         ], 200);
     }
+
+    public function Search(Request $request)
+    {
+        $query = Station::query();
+        $status = $request->input('status', 'available'); 
+        $query->where('status', $status);
+
+        if ($request->has('connector_type')) {
+            $query->where('connector_type', $request->connector_type);
+        }
+
+        if ($request->has('power_kw')) {
+            $query->where('power_kw', '>=', $request->power_kw);
+        }
+
+        if ($request->has('latitude')) {
+            $query->where('latitude', $request->latitude);
+        }
+
+        if ($request->has('longitude')) {
+            $query->where('longitude', $request->longitude);
+        }
+
+
+        $stations = $query->get();
+
+        return response()->json([
+            'count' => $stations->count(),
+            'stations' => $stations
+        ], 200);
+    }
 }
