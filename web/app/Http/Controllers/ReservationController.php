@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreReservationRequest;
 use Illuminate\Http\Request;
 use App\Models\Reservation;
+use App\Models\Station;
 use Carbon\Carbon;
+
 
 class ReservationController extends Controller
 {
@@ -48,6 +50,9 @@ class ReservationController extends Controller
             'end_time' => $endtime,
             'status' => 'active',
         ]);
+
+       $station = Station::find($validatedData['station_id']);
+        $station->update(['status' => 'occupied']);
 
         return response()->json([
             'message' => 'reservation created',
