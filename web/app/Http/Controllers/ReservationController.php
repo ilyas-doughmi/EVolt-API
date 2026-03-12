@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Reservation;
 use App\Models\Station;
 use Carbon\Carbon;
+use App\Jobs\EndReservationJob;
 
 
 class ReservationController extends Controller
@@ -53,6 +54,8 @@ class ReservationController extends Controller
 
        $station = Station::find($validatedData['station_id']);
         $station->update(['status' => 'occupied']);
+
+        EndReservationJob::dispatch($reservation->id)->delay($endtime);
 
         return response()->json([
             'message' => 'reservation created',
