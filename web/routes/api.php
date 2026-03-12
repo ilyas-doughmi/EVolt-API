@@ -17,6 +17,7 @@ Route::post('/auth/logout', [AuthController::class, 'logout']);
 
 // stations
 Route::get('/stations',[StationController::class,'index']);
+Route::get('/stations/search', [StationController::class, 'search']);
 
     Route::middleware('admin')->group(function(){
         Route::post('/stations',[StationController::class,'store']);
