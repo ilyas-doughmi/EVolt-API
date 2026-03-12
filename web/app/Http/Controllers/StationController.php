@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Station;
-
+use App\Models\Reservation;
 class StationController extends Controller
 {
     /**
@@ -109,6 +109,26 @@ class StationController extends Controller
         return response()->json([
             'count' => $stations->count(),
             'stations' => $stations
+        ], 200);
+    }
+
+    public function Statistique(Request $request)
+    {
+        $totalStations = Station::count();
+        $occupiedStations = Station::where('status', 'occupied')->count();
+        $occupationRate = $totalStations > 0 ? round(($occupiedStations / $totalStations) * 100, 2) : 0;
+        $totalEnergy = Reservation::where('status', 'completed')->sum('energy_delivered_kwh');
+        $totalReservations = Reservation::count();
+
+        return response()->json([
+            'message' => 'Statistiques EVolt',
+            'data' => [
+                'total_stations' => $totalStations,
+                'occupied_stations' => $occupiedStations,
+                'occupation_rate_percent' => $occupationRate,
+                'total_energy_delivered_kwh' => $totalEnergy,
+                'total_reservations' => $totalReservations,
+            ]
         ], 200);
     }
 }
